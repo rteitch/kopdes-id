@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   MessageCircle,
+  Wallet,
   X,
 } from "lucide-react";
 
@@ -26,6 +27,7 @@ const navItems = [
   { href: "/anggota", label: "Anggota", icon: Users },
   { href: "/transaksi", label: "Simpanan", icon: ArrowLeftRight },
   { href: "/pinjaman", label: "Pinjaman", icon: BookOpen },
+  { href: "/kas-umum", label: "Kas Umum", icon: Wallet },
   { href: "/laporan", label: "Laporan", icon: FileText },
   { href: "/chatbot", label: "Asisten AI", icon: MessageCircle },
   { href: "/pengaturan", label: "Pengaturan", icon: Settings },
