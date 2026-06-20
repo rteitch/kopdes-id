@@ -95,6 +95,7 @@ model Koperasi {
   pinjaman      Pinjaman[]
   kasUmum       KasUmum[]
   notifikasi    NotifikasiLog[]
+  auditLog      AuditLog[]
 
   @@map("koperasi")
 }
@@ -232,4 +233,21 @@ model NotifikasiLog {
   koperasi    Koperasi   @relation(fields: [koperasiId], references: [id])
 
   @@map("notifikasi_log")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  koperasiId  String   @map("koperasi_id")
+  userId      String   @map("user_id")
+  aksi        String   // CREATE, UPDATE, DELETE
+  entitas     String   // anggota, simpanan, pinjaman, kas_umum
+  entitasId   String   @map("entitas_id")
+  dataLama    Json?    @map("data_lama")
+  dataBaru    Json?    @map("data_baru")
+  ipAddress   String?  @map("ip_address")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  koperasi    Koperasi @relation(fields: [koperasiId], references: [id])
+
+  @@map("audit_log")
 }
