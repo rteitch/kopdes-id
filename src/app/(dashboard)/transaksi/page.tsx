@@ -7,12 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 import {
   Plus,
   ArrowUpRight,
   ArrowDownRight,
   Loader2,
   Receipt,
+  Camera,
 } from "lucide-react";
 
 interface TransaksiData {
@@ -124,10 +126,18 @@ export default function TransaksiPage() {
           <h1 className="text-2xl font-bold text-gray-900">Simpanan</h1>
           <p className="text-gray-500 text-sm mt-1">Catat setoran dan penarikan simpanan anggota</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Catat Transaksi
-        </Button>
+        <div className="flex gap-2">
+          <Link href="/transaksi/scan">
+            <Button variant="outline">
+              <Camera className="h-4 w-4 mr-2" />
+              Scan Nota
+            </Button>
+          </Link>
+          <Button onClick={() => setShowForm(!showForm)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Catat Transaksi
+          </Button>
+        </div>
       </div>
 
       {showForm && (
