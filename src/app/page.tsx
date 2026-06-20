@@ -215,11 +215,12 @@ export default function LandingPage() {
               </div>
               <span className="text-lg font-bold text-white">kopdes.id</span>
             </div>
-            <p className="text-sm text-gray-400 text-center">
-              © 2026 kopdes.id — Mendukung Program Koperasi Desa Merah Putih
-            </p>
+            <div className="text-sm text-gray-400 text-center">
+              <p>© 2026 kopdes.id — Rizal Taufiq Hidayat</p>
+              <p className="mt-1">Hackathon Digital Cooperatives Expo 2026</p>
+            </div>
             <div className="text-sm text-gray-400">
-              Hackathon Digital Cooperatives Expo 2026
+              Kementerian Koperasi RI × PEBS FEB UI
             </div>
           </div>
         </div>

@@ -530,11 +530,17 @@ A: Service Worker sudah registered untuk cache. IndexedDB offline storage ada di
 
 ---
 
-## 👥 Tim
+## 👥 Tim & Developer
+
+| | |
+|---|---|
+| **Developer** | **Rizal Taufiq Hidayat** |
+| GitHub | [github.com/rteitch](https://github.com/rteitch) |
+| Proyek | [github.com/rteitch/kopdes-id](https://github.com/rteitch/kopdes-id) |
 
 Dibuat untuk **Hackathon Digital Cooperatives Expo 2026**
 Kementerian Koperasi RI × PEBS FEB Universitas Indonesia
 
 ## 📄 Lisensi
 
-© 2026 kopdes.id — Hak Cipta Dilindungi
+© 2026 kopdes.id — Rizal Taufiq Hidayat — Hak Cipta Dilindungi
