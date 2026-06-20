@@ -3,8 +3,8 @@
 
 **Tanggal:** 20 Juni 2026
 **Repository:** https://github.com/rteitch/kopdes-id
-**Total Commits:** 15
-**Build Status:** ✅ 26 routes, 0 errors
+**Total Commits:** 17
+**Build Status:** ✅ 27 routes, 0 errors
 
 ---
 
@@ -14,16 +14,16 @@
 |----------|-------|---------|------------|-----------|---|
 | MUST-HAVE (MVP) | 7 | 7 | 0 | 0 | **100%** |
 | SHOULD (MVP) | 2 | 2 | 0 | 0 | **100%** |
-| COULD (MVP) | 2 | 1 | 0 | 1 | **50%** |
+| COULD (MVP) | 2 | 2 | 0 | 0 | **100%** |
 | WONT (Post-Hack) | 2 | 2 | 0 | 0 | **100%** |
 | NFR | 5 | 4 | 1 | 0 | **80%** |
-| **GRAND TOTAL** | **18** | **16** | **1** | **1** | **89%** |
+| **GRAND TOTAL** | **18** | **17** | **1** | **0** | **94%** |
 
 ---
 
-## 2. Semua Fitur yang Sudah Diimplementasikan
+## 2. Semua Fitur yang Sudah Diimplementasikan (38 fitur)
 
-### ✅ DONE (37 fitur)
+### ✅ DONE
 
 | # | Fitur | Route | Commit |
 |---|-------|-------|--------|
@@ -41,29 +41,30 @@
 | 12 | Riwayat Transaksi (FR-ANG-02) | 50 transaksi terakhir | #1 |
 | 13 | Catat Simpanan (FR-TRX-01) | `/transaksi` + `/api/transaksi` | #1 |
 | 14 | Kuitansi Digital (FR-TRX-01) | `src/components/kuitansi.tsx` | #5 |
-| 15 | Catat Pinjaman (FR-TRX-02) | `/pinjaman` + `/api/pinjaman` | #1 |
-| 16 | Jadwal Angsuran Otomatis (FR-TRX-02) | Auto-generate saat create | #1 |
-| 17 | Status Auto-Update (FR-TRX-02) | Aktif → Lunas otomatis | #1 |
-| 18 | Catat Angsuran (FR-TRX-03) | Inline di `/pinjaman` | #1 |
-| 19 | Pelunasan Dipercepat (FR-TRX-03) | Bayar lebih dari angsuran | #1 |
-| 20 | Denda Keterlambatan (FR-TRX-03) | 0.1%/hari otomatis | #1 |
-| 21 | Kas Umum (FR-TRX-04) | `/kas-umum` + `/api/kas-umum` | #5 |
-| 22 | Buku Kas Harian (FR-LAP-01) | `/laporan` (buku-kas) | #1 |
-| 23 | Filter Periode (FR-LAP-01) | Bulan + Tahun dropdown | #1 |
-| 24 | Export PDF (FR-LAP-01) | Print-to-PDF via browser | #1 |
-| 25 | Export Excel/CSV (FR-LAP-01) | `src/lib/export-excel.ts` | #14 |
-| 26 | Neraca Keuangan (FR-LAP-02) | `/laporan` (neraca) + `/laporan/neraca` | #8, #10 |
-| 27 | Laporan Simpanan (FR-LAP-03) | `/laporan` (simpanan) | #1 |
-| 28 | Laporan Pinjaman (FR-LAP-04) | `/laporan` (pinjaman) | #1 |
-| 29 | Kolektibilitas (FR-LAP-04) | Lancar/Kurang Lancar/Diragukan/Macet | #12 |
-| 30 | NPL Calculation (FR-LAP-04) | Non-Performing Loan % | #12 |
-| 31 | SHU (FR-LAP-05) | `/api/laporan/shu` + `/laporan/shu` | #6 |
-| 32 | Dashboard Pengurus (FR-DASH-01) | `/dashboard` | #1 |
-| 33 | Rasio Kesehatan (FR-DASH-01) | Skor 1-100 + circular progress | #12 |
-| 34 | Alert Jatuh Tempo (FR-DASH-01) | Pinjaman jatuh tempo minggu ini | #1 |
-| 35 | Portal Anggota (FR-DASH-02) | `/portal` + `/api/anggota/portal` | #5 |
-| 36 | AI Chatbot (FR-AI-02) | `/chatbot` + `/api/ai/chat` | #1 |
-| 37 | PWA Service Worker | `public/sw.js` + registration | #6 |
+| 15 | Scan Nota OCR (FR-AI-01) | `/transaksi/scan` + Tesseract.js | #17 |
+| 16 | Catat Pinjaman (FR-TRX-02) | `/pinjaman` + `/api/pinjaman` | #1 |
+| 17 | Jadwal Angsuran Otomatis (FR-TRX-02) | Auto-generate saat create | #1 |
+| 18 | Status Auto-Update (FR-TRX-02) | Aktif → Lunas otomatis | #1 |
+| 19 | Catat Angsuran (FR-TRX-03) | Inline di `/pinjaman` | #1 |
+| 20 | Pelunasan Dipercepat (FR-TRX-03) | Bayar lebih dari angsuran | #1 |
+| 21 | Denda Keterlambatan (FR-TRX-03) | 0.1%/hari otomatis | #1 |
+| 22 | Kas Umum (FR-TRX-04) | `/kas-umum` + `/api/kas-umum` | #5 |
+| 23 | Buku Kas Harian (FR-LAP-01) | `/laporan` (buku-kas) | #1 |
+| 24 | Filter Periode (FR-LAP-01) | Bulan + Tahun dropdown | #1 |
+| 25 | Export PDF (FR-LAP-01) | Print-to-PDF via browser | #1 |
+| 26 | Export Excel/CSV (FR-LAP-01) | `src/lib/export-excel.ts` | #14 |
+| 27 | Neraca Keuangan (FR-LAP-02) | `/laporan` (neraca) + `/laporan/neraca` | #8, #10 |
+| 28 | Laporan Simpanan (FR-LAP-03) | `/laporan` (simpanan) | #1 |
+| 29 | Laporan Pinjaman (FR-LAP-04) | `/laporan` (pinjaman) | #1 |
+| 30 | Kolektibilitas (FR-LAP-04) | Lancar/Kurang Lancar/Diragukan/Macet | #12 |
+| 31 | NPL Calculation (FR-LAP-04) | Non-Performing Loan % | #12 |
+| 32 | SHU (FR-LAP-05) | `/api/laporan/shu` + `/laporan/shu` | #6 |
+| 33 | Dashboard Pengurus (FR-DASH-01) | `/dashboard` | #1 |
+| 34 | Rasio Kesehatan (FR-DASH-01) | Skor 1-100 + circular progress | #12 |
+| 35 | Alert Jatuh Tempo (FR-DASH-01) | Pinjaman jatuh tempo minggu ini | #1 |
+| 36 | Portal Anggota (FR-DASH-02) | `/portal` + `/api/anggota/portal` | #5 |
+| 37 | AI Chatbot (FR-AI-02) | `/chatbot` + `/api/ai/chat` | #1 |
+| 38 | PWA Service Worker | `public/sw.js` + registration | #6 |
 
 ### ⚠️ PARTIAL (1 fitur)
 
@@ -71,11 +72,9 @@
 |---|-------|--------|---------|
 | 1 | OTP via WhatsApp | Simulated | OTP auto-generated, perlu Fonnte API untuk production |
 
-### ❌ MISSING (Post-Hackathon, 1 fitur)
+### ❌ MISSING
 
-| # | Fitur | Status | Catatan |
-|---|-------|--------|---------|
-| 1 | Scan Nota OCR (FR-AI-01) | Not started | Tesseract.js di-install, UI belum ada |
+Tidak ada fitur yang belum diimplementasikan. Semua fitur PRD sudah ada (100% FR coverage).
 
 ---
 
@@ -85,7 +84,7 @@
 |-----|--------|---------|
 | Loading < 3 detik | ✅ | First Load JS max 111KB |
 | API response < 500ms | ✅ | Prisma queries optimized |
-| Bundle < 500KB | ✅ | 87.3KB shared JS |
+| Bundle < 500KB | ✅ | 87.4KB shared JS |
 | Uptime 99.5% | ✅ | Docker + auto-restart |
 | Mode offline | ⚠️ | SW registered, IndexedDB belum |
 | TLS 1.3 | ✅ | Via HTTPS (production) |
@@ -119,7 +118,7 @@
 ## 5. Build & Deployment Stats
 
 ```
-Routes:          26 (13 static + 13 API)
+Routes:          27 (14 static + 13 API)
 Prisma Models:   9
 Prisma Enums:    12
 Build Errors:    0
@@ -129,11 +128,12 @@ Docker:          Ready ✅
 PWA:             Service Worker registered ✅
 TypeScript:      Types defined ✅
 Export:          Excel/CSV + PDF ✅
+OCR:             Tesseract.js integrated ✅
 ```
 
 ---
 
-## 6. Git History (15 Commits)
+## 6. Git History (17 Commits)
 
 ```
 1.  feat: kopdes.id MVP
@@ -151,8 +151,10 @@ Export:          Excel/CSV + PDF ✅
 13. feat: add Export Excel/CSV for all laporan types
 14. feat: add onboarding wizard, export Excel, MEDIUM priority fixes
 15. docs: update PROGRESS.md final
+16. feat: add Scan Nota OCR page with Tesseract.js integration
+17. docs: update PROGRESS.md and README.md
 ```
 
 ---
 
-*Last updated: 20 Juni 2026, 08:16 WIB*
+*Last updated: 20 Juni 2026, 08:22 WIB*
