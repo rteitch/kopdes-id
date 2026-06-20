@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============ ENUMS ============
+
+enum Role {
+  KETUA
+  BENDAHARA
+  PENGURUS
+  ANGGOTA
+  DINAS
+}
+
+enum StatusPengguna {
+  AKTIF
+  NONAKTIF
+}
+
+enum StatusAnggota {
+  CALON
+  AKTIF
+  NONAKTIF
+  KELUAR
+}
+
+enum JenisSimpanan {
+  POKOK
+  WAJIB
+  SUKARELA
+}
+
+enum JenisTransaksiSimpanan {
+  SETOR
+  TARIK
+}
+
+enum JenisBunga {
+  FLAT
+  MENURUN
+}
+
+enum StatusPinjaman {
+  AKTIF
+  LUNAS
+  MACET
+}
+
+enum StatusAngsuran {
+  BELUM
+  LUNAS
+  TERLAMBAT
+}
+
+enum JenisKas {
+  PEMASUKAN
+  PENGELUARAN
+}
+
+enum TipeNotifikasi {
+  WA
+  SMS
+  EMAIL
+}
+
+enum StatusNotifikasi {
+  PENDING
+  TERKIRIM
+  GAGAL
+}
+
+// ============ MODELS ============
+
+model Koperasi {
+  id            String    @id @default(uuid())
+  nama          String
+  noBadanHukum  String?   @unique @map("no_badan_hukum")
+  desa          String
+  kecamatan     String    @default("")
+  kabupaten     String
+  provinsi      String
+  settings      Json      @default("{}")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  pengguna      Pengguna[]
+  anggota       Anggota[]
+  simpanan      Simpanan[]
+  pinjaman      Pinjaman[]
+  kasUmum       KasUmum[]
+  notifikasi    NotifikasiLog[]
+
+  @@map("koperasi")
+}
+
+model Pengguna {
+  id          String           @id @default(uuid())
+  koperasiId  String           @map("koperasi_id")
+  nama        String
+  noHp        String           @unique @map("no_hp")
+  email       String?          @unique
+  role        Role             @default(ANGGOTA)
+  status      StatusPengguna   @default(AKTIF)
+  otp         String?
+  otpExpiry   DateTime?        @map("otp_expiry")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  koperasi    Koperasi         @relation(fields: [koperasiId], references: [id])
+  dicatatSimpanan Simpanan[]   @relation("DicatatOleh")
+  dicatatKas  KasUmum[]        @relation("DicatatKasOleh")
+
+  @@map("pengguna")
+}
+
+model Anggota {
+  id            String        @id @default(uuid())
+  koperasiId    String        @map("koperasi_id")
+  penggunaId    String?       @map("pengguna_id")
+  nomorAnggota  String        @map("nomor_anggota")
+  nik           String?
+  nama          String
+  noHp          String        @map("no_hp")
+  alamat        String?
+  tanggalMasuk  DateTime      @map("tanggal_masuk")
+  status        StatusAnggota @default(AKTIF)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  koperasi      Koperasi      @relation(fields: [koperasiId], references: [id])
+  simpanan      Simpanan[]
+  pinjaman      Pinjaman[]
+
+  @@unique([koperasiId, nomorAnggota])
+  @@map("anggota")
+}
+
+model Simpanan {
+  id                String                  @id @default(uuid())
+  koperasiId        String                  @map("koperasi_id")
+  anggotaId         String                  @map("anggota_id")
+  jenis             JenisSimpanan
+  jenisTransaksi    JenisTransaksiSimpanan  @map("jenis_transaksi")
+  jumlah            Decimal                 @db.Decimal(15, 2)
+  saldoSetelah      Decimal?                @map("saldo_setelah") @db.Decimal(15, 2)
+  keterangan        String?
+  dicatatOleh       String                  @map("dicatat_oleh")
+  tanggalTransaksi  DateTime                @map("tanggal_transaksi")
+  createdAt         DateTime                @default(now()) @map("created_at")
+
+  koperasi          Koperasi   @relation(fields: [koperasiId], references: [id])
+  anggota           Anggota    @relation(fields: [anggotaId], references: [id])
+  pencatat          Pengguna   @relation("DicatatOleh", fields: [dicatatOleh], references: [id])
+
+  @@map("simpanan")
+}
+
+model Pinjaman {
+  id              String          @id @default(uuid())
+  koperasiId      String          @map("koperasi_id")
+  anggotaId       String          @map("anggota_id")
+  nomorPinjaman   String          @map("nomor_pinjaman")
+  jumlahPokok     Decimal         @map("jumlah_pokok") @db.Decimal(15, 2)
+  bungaPersen     Decimal         @map("bunga_persen") @db.Decimal(5, 2)
+  jenisBunga      JenisBunga      @map("jenis_bunga")
+  jangkaWaktu     Int             @map("jangka_waktu") // dalam bulan
+  tanggalCair     DateTime        @map("tanggal_cair")
+  tanggalJatuhTempo DateTime      @map("tanggal_jatuh_tempo")
+  status          StatusPinjaman  @default(AKTIF)
+  tujuan          String?
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  koperasi        Koperasi    @relation(fields: [koperasiId], references: [id])
+  anggota         Anggota     @relation(fields: [anggotaId], references: [id])
+  angsuran        Angsuran[]
+
+  @@unique([koperasiId, nomorPinjaman])
+  @@map("pinjaman")
+}
+
+model Angsuran {
+  id              String          @id @default(uuid())
+  pinjamanId      String          @map("pinjaman_id")
+  ke              Int             // angsuran ke-berapa
+  tanggalJatuhTempo DateTime      @map("tanggal_jatuh_tempo")
+  jumlahPokok     Decimal         @map("jumlah_pokok") @db.Decimal(15, 2)
+  jumlahBunga     Decimal         @map("jumlah_bunga") @db.Decimal(15, 2)
+  jumlahDenda     Decimal         @default(0) @map("jumlah_denda") @db.Decimal(15, 2)
+  jumlahBayar     Decimal?        @map("jumlah_bayar") @db.Decimal(15, 2)
+  tanggalBayar    DateTime?       @map("tanggal_bayar")
+  status          StatusAngsuran  @default(BELUM)
+  createdAt       DateTime        @default(now()) @map("created_at")
+
+  pinjaman        Pinjaman   @relation(fields: [pinjamanId], references: [id])
+
+  @@map("angsuran")
+}
+
+model KasUmum {
+  id                String      @id @default(uuid())
+  koperasiId        String      @map("koperasi_id")
+  jenis             JenisKas
+  kategori          String
+  jumlah            Decimal     @db.Decimal(15, 2)
+  keterangan        String?
+  dicatatOleh       String      @map("dicatat_oleh")
+  tanggalTransaksi  DateTime    @map("tanggal_transaksi")
+  createdAt         DateTime    @default(now()) @map("created_at")
+
+  koperasi          Koperasi   @relation(fields: [koperasiId], references: [id])
+  pencatat          Pengguna   @relation("DicatatKasOleh", fields: [dicatatOleh], references: [id])
+
+  @@map("kas_umum")
+}
+
+model NotifikasiLog {
+  id          String            @id @default(uuid())
+  koperasiId  String            @map("koperasi_id")
+  anggotaId   String?           @map("anggota_id")
+  tipe        TipeNotifikasi
+  pesan       String
+  status      StatusNotifikasi  @default(PENDING)
+  createdAt   DateTime          @default(now()) @map("created_at")
+
+  koperasi    Koperasi   @relation(fields: [koperasiId], references: [id])
+
+  @@map("notifikasi_log")
+}
