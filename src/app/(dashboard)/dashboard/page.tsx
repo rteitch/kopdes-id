@@ -21,6 +21,7 @@ interface DashboardData {
   totalPinjamanBeredar: number;
   totalAset: number;
   transaksiHariIni: number;
+  kesehatan: number;
   pinjamanJatuhTempo: Array<{
     id: string;
     ke: number;
@@ -134,6 +135,43 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      {/* Health Score */}
+      <Card>
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Rasio Kesehatan Koperasi</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{data.kesehatan}/100</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Berdasarkan rasio simpanan, pinjaman, dan keaktifan anggota
+              </p>
+            </div>
+            <div className="relative h-20 w-20">
+              <svg className="h-20 w-20 -rotate-90" viewBox="0 0 36 36">
+                <path
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#e5e7eb"
+                  strokeWidth="3"
+                />
+                <path
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke={data.kesehatan >= 70 ? "#16a34a" : data.kesehatan >= 40 ? "#ca8a04" : "#dc2626"}
+                  strokeWidth="3"
+                  strokeDasharray={`${data.kesehatan}, 100`}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className={`text-sm font-bold ${data.kesehatan >= 70 ? "text-green-600" : data.kesehatan >= 40 ? "text-yellow-600" : "text-red-600"}`}>
+                  {data.kesehatan >= 70 ? "Sehat" : data.kesehatan >= 40 ? "Cukup" : "Kurang"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Transaksi Hari Ini */}

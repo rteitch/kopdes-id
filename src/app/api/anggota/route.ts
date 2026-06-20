@@ -112,6 +112,30 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Auto-create Simpanan Pokok (FR-ANG-01)
+    try {
+      const pengguna = await prisma.pengguna.findFirst({
+        where: { koperasiId: validatedData.koperasiId, role: "BENDAHARA" },
+      });
+      if (pengguna) {
+        await prisma.simpanan.create({
+          data: {
+            koperasiId: validatedData.koperasiId,
+            anggotaId: anggota.id,
+            jenis: "POKOK",
+            jenisTransaksi: "SETOR",
+            jumlah: 100000,
+            saldoSetelah: 100000,
+            keterangan: "Simpanan pokok otomatis saat pendaftaran",
+            dicatatOleh: pengguna.id,
+            tanggalTransaksi: new Date(),
+          },
+        });
+      }
+    } catch (e) {
+      console.warn("Auto simpanan pokok gagal:", e);
+    }
+
     return NextResponse.json({
       success: true,
       message: "Anggota berhasil ditambahkan",

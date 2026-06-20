@@ -78,15 +78,25 @@ export async function GET(request: NextRequest) {
 
     const totalAset = netSimpanan + totalKas;
 
+    // Calculate health ratio (simple 1-100 score)
+    const pinjamanBeredar = Number(totalPinjamanAktif._sum.jumlahPokok || 0);
+    const rasioSimpanan = totalKas > 0 && netSimpanan > 0 ? Math.min(100, (totalKas / netSimpanan) * 100) : 50;
+    const rasioPinjaman = netSimpanan > 0 && pinjamanBeredar > 0
+      ? Math.max(0, 100 - (pinjamanBeredar / netSimpanan) * 50)
+      : 80;
+    const rasioAnggota = totalAnggota > 0 ? Math.min(100, (anggotaAktif / totalAnggota) * 100) : 50;
+    const kesehatan = Math.round((rasioSimpanan + rasioPinjaman + rasioAnggota) / 3);
+
     return NextResponse.json({
       success: true,
       data: {
         totalAnggota,
         anggotaAktif,
         totalSimpanan: netSimpanan,
-        totalPinjamanBeredar: Number(totalPinjamanAktif._sum.jumlahPokok || 0),
+        totalPinjamanBeredar: pinjamanBeredar,
         totalAset,
         transaksiHariIni,
+        kesehatan,
         pinjamanJatuhTempo: pinjamanJatuhTempo.map((a) => ({
           id: a.id,
           ke: a.ke,

@@ -309,6 +309,7 @@ export default function LaporanPage() {
                         <th className="text-right py-3 px-2 font-semibold text-gray-600">Pokok</th>
                         <th className="text-center py-3 px-2 font-semibold text-gray-600">Angsuran</th>
                         <th className="text-right py-3 px-2 font-semibold text-gray-600">Sisa Tagihan</th>
+                        <th className="text-center py-3 px-2 font-semibold text-gray-600">Kolektibilitas</th>
                         <th className="text-center py-3 px-2 font-semibold text-gray-600">Status</th>
                       </tr>
                     </thead>
@@ -327,6 +328,16 @@ export default function LaporanPage() {
                             <td className="py-2.5 px-2 text-right font-semibold">{formatRupiah(p.sisaTagihan)}</td>
                             <td className="py-2.5 px-2 text-center">
                               <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
+                                p.kolektibilitas === "Lancar" ? "bg-green-100 text-green-800" :
+                                p.kolektibilitas === "Kurang Lancar" ? "bg-yellow-100 text-yellow-800" :
+                                p.kolektibilitas === "Diragukan" ? "bg-orange-100 text-orange-800" :
+                                "bg-red-100 text-red-800"
+                              }`}>
+                                {p.kolektibilitas}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-2 text-center">
+                              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
                                 p.status === "AKTIF" ? "bg-yellow-100 text-yellow-800" :
                                 p.status === "LUNAS" ? "bg-green-100 text-green-800" :
                                 "bg-red-100 text-red-800"
@@ -342,7 +353,11 @@ export default function LaporanPage() {
                       <tr className="border-t-2 border-gray-300 font-bold">
                         <td colSpan={2} className="py-3 px-2">Total Peminjaman</td>
                         <td className="py-3 px-2 text-right">{formatRupiah(data.totalPeminjaman)}</td>
-                        <td colSpan={3} />
+                      <td />
+                      <td colSpan={2} className="text-right text-sm">
+                        NPL: <span className={`font-bold ${data.npl > 5 ? "text-red-600" : data.npl > 2 ? "text-yellow-600" : "text-green-600"}`}>{data.npl || 0}%</span>
+                      </td>
+                      <td />
                       </tr>
                     </tfoot>
                   </table>

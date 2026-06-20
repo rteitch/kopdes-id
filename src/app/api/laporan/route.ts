@@ -142,6 +142,12 @@ export async function GET(request: NextRequest) {
         const totalBayar = p.angsuran.filter((a) => a.status === "LUNAS").reduce((acc, a) => acc + Number(a.jumlahBayar || 0), 0);
         const sisaTagihan = Number(p.jumlahPokok) + p.angsuran.reduce((acc, a) => acc + Number(a.jumlahBunga), 0) - totalBayar;
         const angsuranLunas = p.angsuran.filter((a) => a.status === "LUNAS").length;
+        const angsuranTerlambat = p.angsuran.filter((a) => a.status === "TERLAMBAT" || (a.status === "BELUM" && new Date(a.tanggalJatuhTempo) < new Date())).length;
+
+        let kolektibilitas = "Lancar";
+        if (p.status === "MACET") kolektibilitas = "Macet";
+        else if (angsuranTerlambat >= 4) kolektibilitas = "Diragukan";
+        else if (angsuranTerlambat >= 2) kolektibilitas = "Kurang Lancar";
 
         return {
           nomorPinjaman: p.nomorPinjaman,
@@ -151,12 +157,23 @@ export async function GET(request: NextRequest) {
           angsuranLunas,
           totalAngsuran: p.jangkaWaktu,
           sisaTagihan: Math.max(0, sisaTagihan),
+          kolektibilitas,
         };
       });
 
+      // NPL calculation
+      const totalPinjamanBeredar = data.reduce((a, d) => a + d.jumlahPokok, 0);
+      const pinjamanMacet = data.filter((d) => d.kolektibilitas === "Macet" || d.kolektibilitas === "Diragukan").reduce((a, d) => a + d.jumlahPokok, 0);
+      const npl = totalPinjamanBeredar > 0 ? (pinjamanMacet / totalPinjamanBeredar * 100) : 0;
+
       return NextResponse.json({
         success: true,
-        data: { periode: `${bulan}/${tahun}`, pinjaman: data, totalPeminjaman: data.reduce((a, d) => a + d.jumlahPokok, 0) },
+        data: {
+          periode: `${bulan}/${tahun}`,
+          pinjaman: data,
+          totalPeminjaman: data.reduce((a, d) => a + d.jumlahPokok, 0),
+          npl: Math.round(npl * 100) / 100,
+        },
       });
     }
 
