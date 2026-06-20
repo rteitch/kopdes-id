@@ -108,7 +108,7 @@ export default function DaftarPage() {
       }
 
       login(data.data.user);
-      router.push("/dashboard");
+      router.push("/onboarding");
     } catch {
       setError("Gagal menghubungi server");
     } finally {
