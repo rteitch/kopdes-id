@@ -13,7 +13,9 @@ import {
   Wallet,
   BookOpen,
   Users,
+  FileSpreadsheet,
 } from "lucide-react";
+import { exportToCSV, formatBukuKasExport, formatSimpananExport, formatPinjamanExport } from "@/lib/export-excel";
 
 const bulanOptions = [
   { value: 1, label: "Januari" },
@@ -62,6 +64,17 @@ export default function LaporanPage() {
     window.print();
   };
 
+  const handleExportExcel = () => {
+    if (!data) return;
+    if (jenis === "buku-kas" && data.transaksi) {
+      exportToCSV(formatBukuKasExport(data.transaksi), `buku-kas-${data.periode}`);
+    } else if (jenis === "simpanan" && data.anggota) {
+      exportToCSV(formatSimpananExport(data.anggota), `laporan-simpanan-${data.periode}`);
+    } else if (jenis === "pinjaman" && data.pinjaman) {
+      exportToCSV(formatPinjamanExport(data.pinjaman), `laporan-pinjaman-${data.periode}`);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -69,10 +82,16 @@ export default function LaporanPage() {
           <h1 className="text-2xl font-bold text-gray-900">Laporan Keuangan</h1>
           <p className="text-gray-500 text-sm mt-1">Generate laporan keuangan koperasi</p>
         </div>
-        <Button variant="outline" onClick={handlePrint}>
-          <Download className="h-4 w-4 mr-2" />
-          Cetak / PDF
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExportExcel} disabled={!data || jenis === "neraca"}>
+            <FileSpreadsheet className="h-4 w-4 mr-2" />
+            Export Excel
+          </Button>
+          <Button variant="outline" onClick={handlePrint}>
+            <Download className="h-4 w-4 mr-2" />
+            Cetak / PDF
+          </Button>
+        </div>
       </div>
 
       {/* Filter */}
