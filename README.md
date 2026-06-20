@@ -172,14 +172,251 @@ npm run dev
 
 ---
 
-## ☁️ Deploy ke Vercel
+## ☁️ Deploy ke Vercel (Step-by-Step)
 
-```powershell
-.\deploy.ps1 push    # Push ke GitHub
-# Buka vercel.com → Import repository → Deploy
+### Langkah 1: Persiapan Database Cloud
+
+Pilih salah satu database PostgreSQL cloud (semua gratis):
+
+| Layanan | Free Tier | Link |
+|---------|-----------|------|
+| **Supabase** ⭐ | 500MB storage, 2 project | [supabase.com](https://supabase.com) |
+| **Neon.tech** | 512MB storage, serverless | [neon.tech](https://neon.tech) |
+| **Railway** | $5 credit/bulan | [railway.app](https://railway.app) |
+
+**Contoh dengan Supabase:**
+1. Buka [supabase.com](https://supabase.com) → Sign up dengan GitHub
+2. Klik **"New Project"**
+3. Isi: Nama project, Password database, Region: Singapore
+4. Tunggu ~2 menit hingga project siap
+5. Klik **Settings** → **Database** → Copy **Connection string** (URI format)
+6. Ganti `[YOUR-PASSWORD]` dengan password yang Anda buat
+
+Contoh hasil:
+```
+postgresql://postgres:password123@db.abc123.supabase.co:5432/postgres
 ```
 
-Database: Supabase (gratis) / Neon.tech (gratis) / Railway
+### Langkah 2: Deploy ke Vercel
+
+```powershell
+# 1. Pastikan kode sudah di-push ke GitHub
+.\deploy.ps1 push
+
+# 2. Buka vercel.com dan login dengan GitHub
+# 3. Klik "Add New Project"
+# 4. Import repository "rteitch/kopdes-id"
+# 5. Klik "Environment Variables" dan tambahkan:
+```
+
+**Environment Variables yang wajib diisi di Vercel:**
+
+| Key | Value | Contoh |
+|-----|-------|--------|
+| `DATABASE_URL` | PostgreSQL URL | `postgresql://postgres:pw@db.xxx.supabase.co:5432/postgres` |
+| `DIRECT_URL` | Sama dengan DATABASE_URL | `postgresql://postgres:pw@db.xxx.supabase.co:5432/postgres` |
+| `NEXTAUTH_SECRET` | Random string 32+ karakter | `kopdes-random-secret-key-2026-abc` |
+| `NEXTAUTH_URL` | URL aplikasi Anda | `https://kopdes-id.vercel.app` |
+
+```powershell
+# 6. Klik "Deploy" — tunggu ~2 menit
+# 7. Setelah deploy selesai, jalankan migrasi database:
+#    Buka Vercel Dashboard → Project → Settings → Integrations → Vercel CLI
+#    Atau gunakan Vercel CLI:
+npm i -g vercel
+vercel login
+vercel env pull .env.local
+npx prisma db push
+npx tsx prisma/seed.ts
+```
+
+### Langkah 3: Akses Aplikasi
+
+Setelah deploy berhasil, aplikasi bisa diakses di:
+```
+https://kopdes-id.vercel.app
+```
+
+Login demo:
+- **Ketua:** `081234567890`
+- **Bendahara:** `081234567891`
+
+---
+
+## 🌐 Custom Domain (Opsional)
+
+### Opsi Domain yang Tersedia
+
+| Domain | Harga | Registrar | Keterangan |
+|--------|-------|-----------|------------|
+| `kopdes-id.vercel.app` | **GRATIS** | Vercel | Otomatis, langsung tersedia |
+| `kopdes-id.com` | ~Rp 150rb/tahun | [Cloudflare](https://cloudflare.com) / [Namecheap](https://namecheap.com) | Domain internasional |
+| `kopdes-merahputih.id` | ~Rp 100rb/tahun | [Niagahoster](https://niagahoster.co.id) / [Domainesia](https://domainesia.com) | Domain Indonesia |
+| `kopdesdigital.id` | ~Rp 100rb/tahun | Niagahoster / Domainesia | Domain Indonesia |
+| `mykopdes.id` | ~Rp 100rb/tahun | Niagahoster / Domainesia | Domain Indonesia |
+| `kopdes.app` | ~Rp 200rb/tahun | Cloudflare | Domain .app (HTTPS only) |
+| `kopdes.desa.id` | ~Rp 50rb/tahun | Pandi | Domain khusus desa |
+
+### Cara Setup Custom Domain di Vercel
+
+**Langkah 1: Beli Domain**
+1. Buka registrar domain (contoh: [Cloudflare](https://cloudflare.com), [Niagahoster](https://niagahoster.co.id))
+2. Cari dan beli domain yang diinginkan
+3. Catat nameserver atau DNS settings
+
+**Langkah 2: Tambahkan Domain di Vercel**
+1. Buka [vercel.com](https://vercel.com) → Project Anda
+2. Klik **Settings** → **Domains**
+3. Ketik domain Anda (contoh: `kopdes-merahputih.id`)
+4. Klik **Add**
+5. Vercel akan menampilkan DNS records yang perlu ditambahkan
+
+**Langkah 3: Update DNS di Registrar**
+
+Tambahkan DNS records berikut di registrar domain Anda:
+
+| Type | Name | Value |
+|------|------|-------|
+| `A` | `@` | `76.76.21.21` |
+| `CNAME` | `www` | `cname.vercel-dns.com` |
+
+Atau jika menggunakan nameserver Vercel:
+| Type | Name | Value |
+|------|------|-------|
+| `NS` | `@` | `ns1.vercel-dns.com` |
+| `NS` | `@` | `ns2.vercel-dns.com` |
+
+**Langkah 4: Update Environment Variable**
+
+Setelah domain aktif, update di Vercel:
+```
+NEXTAUTH_URL=https://kopdes-merahputih.id
+```
+
+**Langkah 5: Tunggu propagasi DNS (biasanya 5-30 menit)**
+
+### Contoh: Deploy dengan Domain Berbeda
+
+Jika user lain ingin fork repo dan menggunakan domain sendiri:
+
+```powershell
+# 1. Fork repository di GitHub
+# 2. Clone fork Anda
+git clone https://github.com/USERNAME/kopdes-id.git
+cd kopdes-id
+
+# 3. Edit package.json (opsional, ganti nama)
+# 4. Deploy ke Vercel
+vercel login
+vercel --prod
+
+# 5. Tambahkan custom domain di Vercel Dashboard
+# 6. Update NEXTAUTH_URL ke domain Anda
+# 7. Jalankan migrasi database
+vercel env pull .env.local
+npx prisma db push
+npx tsx prisma/seed.ts
+```
+
+---
+
+## 🖥 Deploy ke VPS Sendiri
+
+### Spesifikasi Minimum VPS
+| Resource | Minimum | Rekomendasi |
+|----------|---------|-------------|
+| CPU | 1 vCPU | 2 vCPU |
+| RAM | 1 GB | 2 GB |
+| Storage | 20 GB | 40 GB |
+| OS | Ubuntu 22.04 | Ubuntu 22.04 |
+| Harga | ~Rp 60rb/bulan | ~Rp 120rb/bulan |
+
+### Provider VPS Indonesia
+| Provider | Harga Mulai | Link |
+|----------|-------------|------|
+| **DigitalOcean** | $6/bulan | [digitalocean.com](https://digitalocean.com) |
+| **UpCloud** | €7/bulan | [upcloud.com](https://upcloud.com) |
+| **IDCloudHost** | Rp 60rb/bulan | [idcloudhost.com](https://idcloudhost.com) |
+| **Rumahweb** | Rp 75rb/bulan | [rumahweb.com](https://rumahweb.com) |
+
+### Step-by-Step Deploy ke VPS
+
+```bash
+# 1. SSH ke VPS
+ssh root@YOUR_VPS_IP
+
+# 2. Install Docker
+curl -fsSL https://get.docker.com | sh
+systemctl enable docker
+systemctl start docker
+
+# 3. Install Docker Compose
+curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+# 4. Clone repository
+git clone https://github.com/rteitch/kopdes-id.git
+cd kopdes-id
+
+# 5. Edit .env untuk production
+nano .env
+# Ganti DATABASE_URL dengan PostgreSQL lokal/docker
+# Ganti NEXTAUTH_URL dengan domain/IP VPS Anda
+# Ganti NEXTAUTH_SECRET dengan random string
+
+# 6. Jalankan dengan Docker
+docker-compose up -d --build
+
+# 7. Tunggu build selesai (~3-5 menit pertama)
+docker-compose logs -f app
+
+# 8. Jalankan migrasi database
+docker-compose exec app npx prisma db push
+docker-compose exec app npx tsx prisma/seed.ts
+
+# 9. Akses di browser
+# http://YOUR_VPS_IP:3000
+```
+
+### Setup Nginx Reverse Proxy + SSL (Opsional)
+
+```bash
+# Install Nginx dan Certbot
+apt install nginx certbot python3-certbot-nginx -y
+
+# Buat config Nginx
+nano /etc/nginx/sites-available/kopdes-id
+```
+
+```nginx
+server {
+    server_name kopdes-merahputih.id www.kopdes-merahputih.id;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+```bash
+# Enable site
+ln -s /etc/nginx/sites-available/kopdes-id /etc/nginx/sites-enabled/
+nginx -t
+systemctl reload nginx
+
+# Install SSL certificate (HTTPS gratis)
+certbot --nginx -d kopdes-merahputih.id -d www.kopdes-merahputih.id
+
+# Auto-renewal sudah ter-setup otomatis
+```
 
 ---
 
