@@ -89,6 +89,7 @@ export default function LaporanPage() {
                 <option value="buku-kas">Buku Kas Harian</option>
                 <option value="simpanan">Laporan Simpanan</option>
                 <option value="pinjaman">Laporan Pinjaman</option>
+                <option value="neraca">Neraca Keuangan</option>
               </select>
             </div>
             <div className="form-group">
@@ -230,6 +231,61 @@ export default function LaporanPage() {
                     </tfoot>
                   </table>
                 </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Neraca Keuangan */}
+          {jenis === "neraca" && data && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-blue-600" />
+                  Neraca Keuangan Koperasi
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold text-green-700 mb-3">ASET</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Kas dan Bank</span>
+                        <span className="font-medium">{formatRupiah(data.aset?.kasDanBank || 0)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Piutang Pinjaman</span>
+                        <span className="font-medium">{formatRupiah(data.aset?.piutangPinjaman || 0)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm font-bold border-t pt-2">
+                        <span>Total Aset</span>
+                        <span className="text-green-700">{formatRupiah(data.aset?.total || 0)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-blue-700 mb-3">KEWAJIBAN & MODAL</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Simpanan Anggota</span>
+                        <span className="font-medium">{formatRupiah(data.kewajiban?.simpananAnggota || 0)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Modal Disetor</span>
+                        <span className="font-medium">{formatRupiah(data.modal?.modalDisetor || 0)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm font-bold border-t pt-2">
+                        <span>Total Kewajiban + Modal</span>
+                        <span className="text-blue-700">{formatRupiah(data.totalKewajibanDanModal || 0)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {data.balanced !== undefined && (
+                  <div className={`mt-4 p-3 rounded-lg text-center text-sm font-medium ${data.balanced ? "bg-green-50 text-green-700" : "bg-yellow-50 text-yellow-700"}`}>
+                    {data.balanced ? "✓ Neraca Seimbang" : "⚠ Periksa kembali pencatatan transaksi"}
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}

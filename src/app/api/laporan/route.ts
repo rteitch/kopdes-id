@@ -94,6 +94,41 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    if (jenis === "neraca") {
+      // Forward to neraca endpoint
+      const [totalSimpananSetor, totalSimpananTarik, totalPinjamanAktif, kasMasuk, kasKeluar] =
+        await Promise.all([
+          prisma.simpanan.aggregate({ where: { koperasiId, jenisTransaksi: "SETOR" }, _sum: { jumlah: true } }),
+          prisma.simpanan.aggregate({ where: { koperasiId, jenisTransaksi: "TARIK" }, _sum: { jumlah: true } }),
+          prisma.pinjaman.aggregate({ where: { koperasiId, status: "AKTIF" }, _sum: { jumlahPokok: true } }),
+          prisma.kasUmum.aggregate({ where: { koperasiId, jenis: "PEMASUKAN" }, _sum: { jumlah: true } }),
+          prisma.kasUmum.aggregate({ where: { koperasiId, jenis: "PENGELUARAN" }, _sum: { jumlah: true } }),
+        ]);
+
+      const angsuranPaid = await prisma.angsuran.aggregate({
+        where: { pinjaman: { koperasiId, status: "AKTIF" }, status: "LUNAS" },
+        _sum: { jumlahBayar: true },
+      });
+
+      const simpananAnggota = Number(totalSimpananSetor._sum.jumlah || 0) - Number(totalSimpananTarik._sum.jumlah || 0);
+      const pinjamanBersih = Number(totalPinjamanAktif._sum.jumlahPokok || 0) - Number(angsuranPaid._sum.jumlahBayar || 0);
+      const kasKoperasi = Number(kasMasuk._sum.jumlah || 0) - Number(kasKeluar._sum.jumlah || 0);
+      const totalAset = Math.max(0, pinjamanBersih) + Math.max(0, kasKoperasi);
+      const modalKoperasi = totalAset - simpananAnggota;
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          jenis: "neraca",
+          aset: { kasDanBank: Math.max(0, kasKoperasi), piutangPinjaman: Math.max(0, pinjamanBersih), total: totalAset },
+          kewajiban: { simpananAnggota, total: simpananAnggota },
+          modal: { modalDisetor: Math.max(0, modalKoperasi), total: Math.max(0, modalKoperasi) },
+          totalKewajibanDanModal: simpananAnggota + Math.max(0, modalKoperasi),
+          balanced: Math.abs(totalAset - (simpananAnggota + Math.max(0, modalKoperasi))) < 1,
+        },
+      });
+    }
+
     if (jenis === "pinjaman") {
       const pinjaman = await prisma.pinjaman.findMany({
         where: { koperasiId },
