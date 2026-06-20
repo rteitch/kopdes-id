@@ -18,15 +18,15 @@ Berdasarkan validasi PRD vs implementasi, berikut status terakhir:
 
 | # | Item | Status | Keterangan |
 |---|------|--------|------------|
-| 6 | PWA Service Worker | ⏳ | Service Worker belum dibuat |
-| 7 | Audit Log Model | ⏳ | Model audit_log belum ada di Prisma |
-| 8 | Import Excel Anggota | ⏳ | FR-ANG-01: Import CSV/Excel |
+| 6 | PWA Service Worker | ✅ | `public/sw.js` + registration in layout |
+| 7 | SHU Calculation | ✅ | `/api/laporan/shu` + `/laporan/shu` page |
+| 8 | Audit Log Model | ⏳ | Model audit_log belum ada di Prisma |
+| 9 | Import Excel Anggota | ⏳ | FR-ANG-01: Import CSV/Excel |
 
 ### Blok 3 — Post-Hackathon (LOW Priority)
 
 | # | Item | Status | Keterangan |
 |---|------|--------|------------|
-| 9 | SHU Calculation | ❌ | FR-LAP-05 |
 | 10 | Neraca SAK ETAP | ❌ | FR-LAP-02 |
 | 11 | OCR Scan Nota | ❌ | FR-AI-01 |
 | 12 | WhatsApp Notifications | ❌ | FR-TRX-01/02 |
@@ -36,11 +36,13 @@ Berdasarkan validasi PRD vs implementasi, berikut status terakhir:
 
 ## Build Stats
 
-- **23 routes** (11 static + 12 dynamic API)
+- **24 routes** (12 static + 12 dynamic API)
 - **0 errors**, only warnings
 - **First Load JS**: max 111KB (target < 500KB) ✅
 - **Middleware**: 26.6KB
 - **Standalone output**: Docker-ready
+- **PWA**: Service Worker registered ✅
+- **6 commits** pushed to GitHub
 
 ## Compliance Summary
 
@@ -49,9 +51,9 @@ Berdasarkan validasi PRD vs implementasi, berikut status terakhir:
 | MUST-HAVE (MVP) | 7 | 7 | 0 | **100%** |
 | SHOULD (MVP) | 2 | 2 | 0 | **100%** |
 | COULD (MVP) | 2 | 1 | 1 | **50%** |
-| WONT (Post-Hack) | 2 | 0 | 2 | **0%** |
-| NFR (Non-Functional) | 5 | 3 | 2 | **60%** |
-| **TOTAL** | **18** | **13** | **5** | **72%** |
+| WONT (Post-Hack) | 2 | 1 | 1 | **50%** |
+| NFR (Non-Functional) | 5 | 4 | 1 | **80%** |
+| **TOTAL** | **18** | **15** | **3** | **83%** |
 
 ## Implementation Log
 
@@ -76,4 +78,14 @@ Berdasarkan validasi PRD vs implementasi, berikut status terakhir:
 - ✅ Kuitansi Digital component
 - ✅ Portal Anggota Self-Service (FR-DASH-02)
 - ✅ Error Boundary React
-- ✅ All pushed to GitHub (5 commits)
+- ✅ PWA Service Worker (offline cache)
+- ✅ SHU Calculation API + Page (FR-LAP-05)
+- ✅ All pushed to GitHub (6 commits)
+
+### Remaining (Post-Hackathon)
+- ⏳ Audit Log Model
+- ⏳ Import Excel Anggota
+- ❌ Neraca SAK ETAP (FR-LAP-02)
+- ❌ OCR Scan Nota (FR-AI-01)
+- ❌ WhatsApp Notifications
+- ❌ tRPC integration
